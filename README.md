@@ -8,5 +8,5 @@ How to run it:
 - `python coapserver.py`
 
 Test:
-- install (coap-cli)[https://github.com/avency/coap-cli]
+- install [coap-cli](https://github.com/avency/coap-cli)
 - `coap get coap://0.0.0.0:5683/dinning_room/temperature`
