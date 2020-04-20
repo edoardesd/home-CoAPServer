@@ -4,7 +4,7 @@ import getopt
 import sys
 from coapthon.server.coap import CoAP
 from resources import BasicResource, BasicTemperatureResource, TemperatureResource, Hello, DoorResource, \
-    ObservableResource, HelloPost, AdvancedResource
+    HelloPost, AdvancedResource
 
 
 class CoAPServer(CoAP):

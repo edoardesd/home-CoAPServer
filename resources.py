@@ -31,7 +31,9 @@ def check_json(val):
 
 def dispatch_query(_key, _value):
     return {
-        "status": _value if _value in VALID_DOOR_STATUS else "ERROR"
+        "status": _value if _value in VALID_DOOR_STATUS else "ERROR",
+        "living_room": "Available resources: Temperature, Door and Light",
+        "dinning_room": "Available resources: Temperature, Door and Light"
     }.get(_key, "Invalid query")
 
 
@@ -175,57 +177,13 @@ class DoorResource(Resource):
         return True, response
 
 
-class ObservableResource(Resource):
-    def __init__(self, name="Obs", coap_server=None):
-        super(ObservableResource, self).__init__(name, coap_server, visible=True, observable=True, allow_children=False)
-        self.payload = "Observable Resource"
-        self.period = 5
-        self.observe = False
-        # self.update(True)
-
-    def change(self):
-        self.payload = "New Resource"
-        logger.debug("new payload")
-        if not self._coap_server.stopped.isSet():
-            self._coap_server.notify(self)
-            self.observe_count += 1
-            timer = threading.Timer(5.0, self.change)
-            timer.setDaemon(True)
-            timer.start()
-        return self
-
-    def render_GET(self, request):
-        if "Observe" in str(request) and not self.observe:
-            self.observe = True
-            self._coap_server.notify(self)
-            timer = threading.Timer(5.0, self.change)
-            timer.setDaemon(True)
-            timer.start()
-        return self
-
-    def render_POST(self, request):
-        self.payload = request.payload
-        return self
-
-    # def update(self, first=False):
-    #     self.payload = "Observable Resource"
-    #     if not self._coap_server.stopped.isSet():
-    #
-    #         timer = threading.Timer(self.period, self.update)
-    #         timer.setDaemon(True)
-    #         timer.start()
-    #
-    #         if not first and self._coap_server is not None:
-    #             logger.debug("Periodic Update")
-    #             self._coap_server.notify(self)
-    #             self.observe_count += 1
-
 
 class BasicResource(Resource):
     def __init__(self, name="BasicResource", coap_server=None):
         super(BasicResource, self).__init__(name, coap_server, visible=True,
                                             observable=False, allow_children=True)
-        self.payload = "Basic Resource"
+
+        self.payload = dispatch_query(self.name, None)
         self.resource_type = "rt1"
         self.content_type = "text/plain"
         self.interface_type = "if1"
