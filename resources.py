@@ -33,7 +33,7 @@ def dispatch_query(_key, _value):
     return {
         "status": _value if _value in VALID_DOOR_STATUS else "ERROR",
         "living_room": "Available resources: Temperature, Door and Light",
-        "dinning_room": "Available resources: Temperature, Door and Light"
+        "dining_room": "Available resources: Temperature, Door and Light"
     }.get(_key, "Invalid query")
 
 
@@ -113,6 +113,7 @@ class DoorResource(Resource):
     def render_GET(self, request):
         return self
 
+    # Query example: coap://0.0.0.0:5683/living_room/door?status=CLOSED
     def render_PUT_advanced(self, request, response):
         assert(isinstance(response, Response))
         if not str(request.uri_query):
@@ -144,6 +145,7 @@ class DoorResource(Resource):
         response.code = defines.Codes.CHANGED.number
         return self, response
 
+    # Query example: coap://0.0.0.0:5683/living_room/door?create    + Payload w/ name of new resource
     def render_POST_advanced(self, request, response):
         print(self.__dict__)
         assert(isinstance(response, Response))
@@ -233,6 +235,7 @@ class HelloPost(Resource):
         self.edit_resource(request)
         return self
 
+
 class XMLResource(Resource):
     def __init__(self, name="XML"):
         super(XMLResource, self).__init__(name)
@@ -273,12 +276,12 @@ class AdvancedResource(Resource):
         super(AdvancedResource, self).__init__(name, coap_server, visible=True,
                                             observable=obs, allow_children=True)
 
+        self.timer = threading.Timer(random.uniform(3.0, 10.9), self.periodic_read)
         self.periodic_read()
 
     def periodic_read(self):
         self.payload = read_temperature()
         if not self._coap_server.stopped.isSet():
-            self.timer = threading.Timer(random.uniform(3.0, 10.9), self.periodic_read)
             self.timer.setDaemon(True)
             self.timer.start()
 

@@ -16,13 +16,13 @@ class CoAPServer(CoAP):
         self.add_resource('living_room/', BasicResource(coap_server=self))
         self.add_resource('living_room/temperature', BasicTemperatureResource(coap_server=self))
         self.add_resource('living_room/door', DoorResource(coap_server=self, name="living_room_door"))
-        self.add_resource('dinning_room/', BasicResource(coap_server=self))
-        self.add_resource('dinning_room/temperature', TemperatureResource(coap_server=self, name='dinning'))
-        self.add_resource('dinning_room/door', DoorResource(coap_server=self, name="dinning_room_door"))
+        self.add_resource('dining_room/', BasicResource(coap_server=self))
+        self.add_resource('dining_room/temperature', TemperatureResource(coap_server=self, name='dining'))
+        self.add_resource('dining_room/door', DoorResource(coap_server=self, name="dining_room_door"))
         self.add_resource('main_door', DoorResource(coap_server=self, name="main_door"))
         self.add_resource('test', AdvancedResource(coap_server=self, name="test"))
 
-        print("CoAP Server start on " + host + ":" + str(port))
+        print("CoAP Server start on coap://" + host + ":" + str(port))
         print(self.root.dump())
 
 
